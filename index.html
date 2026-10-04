@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="StudyFlow - A modern student task management system."
+    >
+
+    <title>StudyFlow | Student Task Management</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <span>✓</span>
+            </div>
+
+            <div>
+                <h1>StudyFlow</h1>
+                <span>Student Workspace</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <p class="nav-label">Workspace</p>
+
+            <button class="nav-item active" data-view="all">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </button>
+
+            <button class="nav-item" data-view="pending">
+                <span class="nav-icon">○</span>
+                <span>Pending Tasks</span>
+                <span class="nav-count" id="pendingNavCount">0</span>
+            </button>
+
+            <button class="nav-item" data-view="completed">
+                <span class="nav-icon">✓</span>
+                <span>Completed</span>
+                <span class="nav-count" id="completedNavCount">0</span>
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="productivity-card">
+                <div class="productivity-icon">✦</div>
+
+                <div>
+                    <strong>Keep going!</strong>
+                    <p>Small progress adds up.</p>
+                </div>
+            </div>
+
+            <div class="user-profile">
+                <div class="avatar">ES</div>
+
+                <div class="user-details">
+                    <strong>Esha Saleem</strong>
+                    <span>Student</span>
+                </div>
+
+                <button class="more-btn" aria-label="More options">
+                    ⋯
+                </button>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Top Header -->
+        <header class="topbar">
+
+            <button
+                class="mobile-menu-btn"
+                id="mobileMenuBtn"
+                aria-label="Open navigation"
+            >
+                ☰
+            </button>
+
+            <div class="breadcrumb">
+                <span>Workspace</span>
+                <span>/</span>
+                <strong>Dashboard</strong>
+            </div>
+
+            <div class="topbar-actions">
+
+                <button
+                    class="icon-button"
+                    id="themeToggle"
+                    aria-label="Toggle theme"
+                    title="Toggle theme"
+                >
+                    ◐
+                </button>
+
+                <button
+                    class="icon-button notification-btn"
+                    aria-label="Notifications"
+                >
+                    ♧
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="top-avatar">ES</div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Dashboard -->
+        <section class="dashboard">
+
+            <!-- Welcome -->
+            <div class="welcome-section">
+
+                <div>
+                    <p class="eyebrow">YOUR PRODUCTIVITY SPACE</p>
+
+                    <h2>
+                        Good day, Esha
+                        <span>✦</span>
+                    </h2>
+
+                    <p class="welcome-text">
+                        Stay focused, organize your work, and keep moving forward.
+                    </p>
+                </div>
+
+                <button class="primary-button" id="openTaskModal">
+                    <span>+</span>
+                    Add New Task
+                </button>
+
+            </div>
+
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Total Tasks</span>
+                        <div class="stat-icon blue">▦</div>
+                    </div>
+
+                    <div class="stat-value" id="totalTasks">0</div>
+
+                    <p class="stat-description">
+                        Tasks in your workspace
+                    </p>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Pending</span>
+                        <div class="stat-icon orange">◷</div>
+                    </div>
+
+                    <div class="stat-value" id="pendingTasks">0</div>
+
+                    <p class="stat-description">
+                        Tasks waiting for you
+                    </p>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Completed</span>
+                        <div class="stat-icon green">✓</div>
+                    </div>
+
+                    <div class="stat-value" id="completedTasks">0</div>
+
+                    <p class="stat-description">
+                        Tasks successfully finished
+                    </p>
+                </div>
+
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Completion Rate</span>
+                        <div class="stat-icon purple">↗</div>
+                    </div>
+
+                    <div class="stat-value">
+                        <span id="completionRate">0</span>%
+                    </div>
+
+                    <div class="progress-bar">
+                        <div
+                            class="progress-fill"
+                            id="progressFill"
+                        ></div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Task Workspace -->
+            <section class="task-workspace">
+
+                <div class="section-header">
+
+                    <div>
+                        <h3 id="taskSectionTitle">My Tasks</h3>
+
+                        <p id="taskSectionDescription">
+                            Keep track of everything you need to accomplish.
+                        </p>
+                    </div>
+
+                    <div class="task-tools">
+
+                        <div class="search-box">
+                            <span>⌕</span>
+
+                            <input
+                                type="search"
+                                id="searchInput"
+                                placeholder="Search tasks..."
+                                aria-label="Search tasks"
+                            >
+                        </div>
+
+                        <select id="priorityFilter" class="filter-select">
+                            <option value="all">All priorities</option>
+                            <option value="high">High priority</option>
+                            <option value="medium">Medium priority</option>
+                            <option value="low">Low priority</option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Task List -->
+                <div id="taskList" class="task-list"></div>
+
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state hidden">
+
+                    <div class="empty-icon">✓</div>
+
+                    <h3 id="emptyTitle">No tasks found</h3>
+
+                    <p id="emptyDescription">
+                        Add a new task to start organizing your work.
+                    </p>
+
+                    <button
+                        class="secondary-button"
+                        id="emptyStateButton"
+                    >
+                        Add a Task
+                    </button>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <!-- Add Task Modal -->
+    <div class="modal-overlay hidden" id="taskModal">
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <div>
+                    <p class="eyebrow">NEW TASK</p>
+                    <h3>Create a task</h3>
+                    <p>Add something you want to accomplish.</p>
+                </div>
+
+                <button
+                    class="close-modal"
+                    id="closeTaskModal"
+                    aria-label="Close modal"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="taskForm">
+
+                <div class="form-group">
+
+                    <label for="taskTitle">
+                        Task title
+                    </label>
+
+                    <input
+                        type="text"
+                        id="taskTitle"
+                        placeholder="e.g. Prepare OOP assignment"
+                        maxlength="80"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="taskDescription">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="taskDescription"
+                        placeholder="Add some details about this task..."
+                        maxlength="250"
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="taskPriority">
+                            Priority
+                        </label>
+
+                        <select id="taskPriority">
+
+                            <option value="low">
+                                Low
+                            </option>
+
+                            <option value="medium" selected>
+                                Medium
+                            </option>
+
+                            <option value="high">
+                                High
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="taskDate">
+                            Due date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="taskDate"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="cancelTask"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        Create Task
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Toast Notification -->
+    <div
+        class="toast"
+        id="toast"
+        role="status"
+        aria-live="polite"
+    >
+        <span class="toast-icon">✓</span>
+        <span id="toastMessage">Task created successfully.</span>
+    </div>
+
+
+    <script src="js/script.js"></script>
+
+</body>
+</html>
