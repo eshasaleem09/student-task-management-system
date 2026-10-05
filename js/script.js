@@ -180,7 +180,8 @@ function formatDate(dateString) {
         return "No due date";
     }
 
-    const date = new Date(dateString + "T00:00:00");
+    const date =
+        new Date(dateString + "T00:00:00");
 
     return date.toLocaleDateString(
         "en-US",
@@ -241,6 +242,27 @@ function renderTasks() {
         });
 
 
+    /* =========================================
+       UPDATE TASK COUNT
+    ========================================= */
+
+    const taskCount =
+        document.getElementById("taskCount");
+
+    if (taskCount) {
+
+        const count =
+            filteredTasks.length;
+
+        taskCount.textContent =
+            `${count} ${count === 1 ? "task" : "tasks"}`;
+    }
+
+
+    /* =========================================
+       DISPLAY TASKS
+    ========================================= */
+
     taskList.innerHTML = "";
 
 
@@ -277,7 +299,9 @@ function createTaskElement(task) {
 
     article.className = "task-card";
 
+
     if (task.completed) {
+
         article.classList.add("completed");
     }
 
@@ -391,10 +415,13 @@ function showEmptyState() {
 
 function updateStatistics() {
 
-    const total = tasks.length;
+    const total =
+        tasks.length;
 
     const completed =
-        tasks.filter(task => task.completed).length;
+        tasks.filter(
+            task => task.completed
+        ).length;
 
     const pending =
         total - completed;
@@ -403,16 +430,22 @@ function updateStatistics() {
     const rate =
         total === 0
             ? 0
-            : Math.round((completed / total) * 100);
+            : Math.round(
+                (completed / total) * 100
+            );
 
 
-    totalTasks.textContent = total;
+    totalTasks.textContent =
+        total;
 
-    pendingTasks.textContent = pending;
+    pendingTasks.textContent =
+        pending;
 
-    completedTasks.textContent = completed;
+    completedTasks.textContent =
+        completed;
 
-    completionRate.textContent = rate;
+    completionRate.textContent =
+        rate;
 
     progressFill.style.width =
         `${rate}%`;
@@ -537,14 +570,12 @@ taskList.addEventListener(
         if (action === "complete") {
 
             toggleTask(taskId);
-
         }
 
 
         if (action === "delete") {
 
             deleteTask(taskId);
-
         }
 
     }
@@ -721,7 +752,6 @@ taskModal.addEventListener(
         if (event.target === taskModal) {
 
             closeModal();
-
         }
     }
 );
@@ -757,9 +787,13 @@ emptyStateButton.addEventListener(
     "click",
     function () {
 
-        if (currentView === "pending") {
+        if (
+            currentView === "pending" ||
+            currentView === "completed"
+        ) {
 
             currentView = "all";
+
 
             document
                 .querySelectorAll(".nav-item")
@@ -767,39 +801,19 @@ emptyStateButton.addEventListener(
                     item.classList.remove("active")
                 );
 
-            document
-                .querySelector('[data-view="all"]')
-                .classList.add("active");
-
-            taskSectionTitle.textContent =
-                "My Tasks";
-
-            taskSectionDescription.textContent =
-                "Keep track of everything you need to accomplish.";
-
-            renderTasks();
-
-        }
-
-        else if (currentView === "completed") {
-
-            currentView = "all";
-
-            document
-                .querySelectorAll(".nav-item")
-                .forEach(item =>
-                    item.classList.remove("active")
-                );
 
             document
                 .querySelector('[data-view="all"]')
                 .classList.add("active");
 
+
             taskSectionTitle.textContent =
                 "My Tasks";
 
+
             taskSectionDescription.textContent =
                 "Keep track of everything you need to accomplish.";
+
 
             renderTasks();
 
@@ -808,7 +822,6 @@ emptyStateButton.addEventListener(
         else {
 
             openModal();
-
         }
 
     }
@@ -914,7 +927,6 @@ document.addEventListener(
         ) {
 
             closeModal();
-
         }
 
 
@@ -926,7 +938,6 @@ document.addEventListener(
             event.preventDefault();
 
             searchInput.focus();
-
         }
 
     }
