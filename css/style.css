@@ -1625,3 +1625,9 @@ body.dark-mode .stat-card:hover,
 body.dark-mode .task-card:hover {
     border-color: #394252;
 }
+.form-group small {
+    display: block;
+    margin-top: 6px;
+    color: var(--text-muted);
+    font-size: 9px;
+}
