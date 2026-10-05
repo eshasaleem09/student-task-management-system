@@ -9,77 +9,40 @@
 ========================================= */
 
 const taskForm = document.getElementById("taskForm");
-
 const taskModal = document.getElementById("taskModal");
-
 const openTaskModal = document.getElementById("openTaskModal");
-
 const closeTaskModal = document.getElementById("closeTaskModal");
-
 const cancelTask = document.getElementById("cancelTask");
-
 const taskList = document.getElementById("taskList");
-
 const emptyState = document.getElementById("emptyState");
-
 const emptyTitle = document.getElementById("emptyTitle");
+const emptyDescription = document.getElementById("emptyDescription");
+const emptyStateButton = document.getElementById("emptyStateButton");
 
-const emptyDescription =
-    document.getElementById("emptyDescription");
+const searchInput = document.getElementById("searchInput");
+const priorityFilter = document.getElementById("priorityFilter");
 
-const emptyStateButton =
-    document.getElementById("emptyStateButton");
+const totalTasks = document.getElementById("totalTasks");
+const pendingTasks = document.getElementById("pendingTasks");
+const completedTasks = document.getElementById("completedTasks");
+const completionRate = document.getElementById("completionRate");
+const progressFill = document.getElementById("progressFill");
 
-const searchInput =
-    document.getElementById("searchInput");
+const pendingNavCount = document.getElementById("pendingNavCount");
+const completedNavCount = document.getElementById("completedNavCount");
 
-const priorityFilter =
-    document.getElementById("priorityFilter");
-
-const totalTasks =
-    document.getElementById("totalTasks");
-
-const pendingTasks =
-    document.getElementById("pendingTasks");
-
-const completedTasks =
-    document.getElementById("completedTasks");
-
-const completionRate =
-    document.getElementById("completionRate");
-
-const progressFill =
-    document.getElementById("progressFill");
-
-const pendingNavCount =
-    document.getElementById("pendingNavCount");
-
-const completedNavCount =
-    document.getElementById("completedNavCount");
-
-const taskSectionTitle =
-    document.getElementById("taskSectionTitle");
-
+const taskSectionTitle = document.getElementById("taskSectionTitle");
 const taskSectionDescription =
     document.getElementById("taskSectionDescription");
 
-const toast =
-    document.getElementById("toast");
+const toast = document.getElementById("toast");
+const toastMessage = document.getElementById("toastMessage");
 
-const toastMessage =
-    document.getElementById("toastMessage");
+const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+const sidebar = document.getElementById("sidebar");
+const mobileOverlay = document.getElementById("mobileOverlay");
 
-const mobileMenuBtn =
-    document.getElementById("mobileMenuBtn");
-
-const sidebar =
-    document.getElementById("sidebar");
-
-const mobileOverlay =
-    document.getElementById("mobileOverlay");
-
-const themeToggle =
-    document.getElementById("themeToggle");
+const themeToggle = document.getElementById("themeToggle");
 
 
 /* =========================================
@@ -140,8 +103,10 @@ if (tasks.length === 0) {
 
 function createId() {
 
-    return Date.now().toString() +
-        Math.random().toString(36).substring(2, 8);
+    return (
+        Date.now().toString() +
+        Math.random().toString(36).substring(2, 8)
+    );
 }
 
 
@@ -180,7 +145,9 @@ function formatDate(dateString) {
         return "No due date";
     }
 
-    const date = new Date(dateString + "T00:00:00");
+    const date = new Date(
+        dateString + "T00:00:00"
+    );
 
     return date.toLocaleDateString(
         "en-US",
@@ -205,40 +172,46 @@ function renderTasks() {
         priorityFilter.value;
 
 
-    let filteredTasks =
-        tasks.filter(task => {
+    const filteredTasks = tasks.filter(task => {
 
-            const matchesSearch =
-                task.title
-                    .toLowerCase()
-                    .includes(searchTerm) ||
+        const title =
+            task.title.toLowerCase();
 
-                task.description
-                    .toLowerCase()
-                    .includes(searchTerm);
+        const description =
+            task.description.toLowerCase();
 
 
-            const matchesPriority =
-                selectedPriority === "all" ||
-                task.priority === selectedPriority;
+        const matchesSearch =
+            title.includes(searchTerm) ||
+            description.includes(searchTerm);
 
 
-            const matchesView =
-                currentView === "all" ||
-
-                (currentView === "pending" &&
-                    !task.completed) ||
-
-                (currentView === "completed" &&
-                    task.completed);
+        const matchesPriority =
+            selectedPriority === "all" ||
+            task.priority === selectedPriority;
 
 
-            return (
-                matchesSearch &&
-                matchesPriority &&
-                matchesView
+        const matchesView =
+            currentView === "all" ||
+
+            (
+                currentView === "pending" &&
+                !task.completed
+            ) ||
+
+            (
+                currentView === "completed" &&
+                task.completed
             );
-        });
+
+
+        return (
+            matchesSearch &&
+            matchesPriority &&
+            matchesView
+        );
+
+    });
 
 
     taskList.innerHTML = "";
@@ -275,25 +248,43 @@ function createTaskElement(task) {
     const article =
         document.createElement("article");
 
+
     article.className = "task-card";
 
+
+    /* Add completed class */
+
     if (task.completed) {
+
         article.classList.add("completed");
+
     }
 
 
     article.innerHTML = `
 
+        <!-- COMPLETE BUTTON -->
+
         <button
             class="task-check"
             data-action="complete"
             data-id="${task.id}"
-            aria-label="Mark task as complete"
-            title="Mark task as complete"
+            aria-label="${
+                task.completed
+                    ? "Mark task as pending"
+                    : "Mark task as complete"
+            }"
+            title="${
+                task.completed
+                    ? "Mark task as pending"
+                    : "Mark task as complete"
+            }"
         >
             ${task.completed ? "✓" : ""}
         </button>
 
+
+        <!-- TASK CONTENT -->
 
         <div class="task-content">
 
@@ -308,6 +299,8 @@ function createTaskElement(task) {
         </div>
 
 
+        <!-- TASK META -->
+
         <div class="task-meta">
 
             <span class="priority ${task.priority}">
@@ -317,6 +310,9 @@ function createTaskElement(task) {
             <span class="task-date">
                 ${formatDate(task.date)}
             </span>
+
+
+            <!-- DELETE BUTTON -->
 
             <button
                 class="delete-task"
@@ -329,6 +325,7 @@ function createTaskElement(task) {
             </button>
 
         </div>
+
     `;
 
 
@@ -381,6 +378,7 @@ function showEmptyState() {
 
         emptyStateButton.textContent =
             "Add a Task";
+
     }
 }
 
@@ -391,10 +389,15 @@ function showEmptyState() {
 
 function updateStatistics() {
 
-    const total = tasks.length;
+    const total =
+        tasks.length;
+
 
     const completed =
-        tasks.filter(task => task.completed).length;
+        tasks.filter(
+            task => task.completed
+        ).length;
+
 
     const pending =
         total - completed;
@@ -403,16 +406,26 @@ function updateStatistics() {
     const rate =
         total === 0
             ? 0
-            : Math.round((completed / total) * 100);
+            : Math.round(
+                (completed / total) * 100
+            );
 
 
-    totalTasks.textContent = total;
+    totalTasks.textContent =
+        total;
 
-    pendingTasks.textContent = pending;
 
-    completedTasks.textContent = completed;
+    pendingTasks.textContent =
+        pending;
 
-    completionRate.textContent = rate;
+
+    completedTasks.textContent =
+        completed;
+
+
+    completionRate.textContent =
+        rate;
+
 
     progressFill.style.width =
         `${rate}%`;
@@ -420,6 +433,7 @@ function updateStatistics() {
 
     pendingNavCount.textContent =
         pending;
+
 
     completedNavCount.textContent =
         completed;
@@ -473,17 +487,19 @@ taskForm.addEventListener(
         }
 
 
+        /* New tasks always start as pending */
+
         const newTask = {
 
             id: createId(),
 
-            title,
+            title: title,
 
-            description,
+            description: description,
 
-            priority,
+            priority: priority,
 
-            date,
+            date: date,
 
             completed: false
 
@@ -499,6 +515,7 @@ taskForm.addEventListener(
 
         updateStatistics();
 
+
         taskForm.reset();
 
         closeModal();
@@ -507,6 +524,7 @@ taskForm.addEventListener(
         showToast(
             "Task created successfully."
         );
+
     }
 );
 
@@ -522,6 +540,7 @@ taskList.addEventListener(
         const button =
             event.target.closest("button");
 
+
         if (!button) {
             return;
         }
@@ -530,9 +549,14 @@ taskList.addEventListener(
         const action =
             button.dataset.action;
 
+
         const taskId =
             button.dataset.id;
 
+
+        /* ================================
+           COMPLETE TASK
+        ================================= */
 
         if (action === "complete") {
 
@@ -540,6 +564,10 @@ taskList.addEventListener(
 
         }
 
+
+        /* ================================
+           DELETE TASK
+        ================================= */
 
         if (action === "delete") {
 
@@ -550,6 +578,10 @@ taskList.addEventListener(
     }
 );
 
+
+/* =========================================
+   TOGGLE TASK COMPLETION
+========================================= */
 
 function toggleTask(taskId) {
 
@@ -564,16 +596,25 @@ function toggleTask(taskId) {
     }
 
 
+    /* Toggle completion status */
+
     task.completed =
         !task.completed;
 
 
+    /* Save the new status */
+
     saveTasks();
+
+
+    /* Update interface */
 
     renderTasks();
 
     updateStatistics();
 
+
+    /* Show feedback */
 
     showToast(
         task.completed
@@ -582,6 +623,10 @@ function toggleTask(taskId) {
     );
 }
 
+
+/* =========================================
+   DELETE TASK
+========================================= */
 
 function deleteTask(taskId) {
 
@@ -611,7 +656,7 @@ function deleteTask(taskId) {
 
 
 /* =========================================
-   SEARCH + FILTER
+   SEARCH
 ========================================= */
 
 searchInput.addEventListener(
@@ -619,6 +664,10 @@ searchInput.addEventListener(
     renderTasks
 );
 
+
+/* =========================================
+   PRIORITY FILTER
+========================================= */
 
 priorityFilter.addEventListener(
     "change",
@@ -662,6 +711,7 @@ document
 
                 }
 
+
                 else if (currentView === "pending") {
 
                     taskSectionTitle.textContent =
@@ -672,7 +722,8 @@ document
 
                 }
 
-                else {
+
+                else if (currentView === "completed") {
 
                     taskSectionTitle.textContent =
                         "Completed Tasks";
@@ -686,6 +737,7 @@ document
                 renderTasks();
 
                 closeMobileSidebar();
+
             }
         );
 
@@ -723,17 +775,22 @@ taskModal.addEventListener(
             closeModal();
 
         }
+
     }
 );
 
 
 function openModal() {
 
-    taskModal.classList.remove("hidden");
+    taskModal.classList.remove(
+        "hidden"
+    );
+
 
     document
         .getElementById("taskTitle")
         .focus();
+
 
     document.body.style.overflow =
         "hidden";
@@ -742,7 +799,10 @@ function openModal() {
 
 function closeModal() {
 
-    taskModal.classList.add("hidden");
+    taskModal.classList.add(
+        "hidden"
+    );
+
 
     document.body.style.overflow =
         "";
@@ -757,9 +817,13 @@ emptyStateButton.addEventListener(
     "click",
     function () {
 
-        if (currentView === "pending") {
+        if (
+            currentView === "pending" ||
+            currentView === "completed"
+        ) {
 
             currentView = "all";
+
 
             document
                 .querySelectorAll(".nav-item")
@@ -767,39 +831,29 @@ emptyStateButton.addEventListener(
                     item.classList.remove("active")
                 );
 
-            document
-                .querySelector('[data-view="all"]')
-                .classList.add("active");
 
-            taskSectionTitle.textContent =
-                "My Tasks";
-
-            taskSectionDescription.textContent =
-                "Keep track of everything you need to accomplish.";
-
-            renderTasks();
-
-        }
-
-        else if (currentView === "completed") {
-
-            currentView = "all";
-
-            document
-                .querySelectorAll(".nav-item")
-                .forEach(item =>
-                    item.classList.remove("active")
+            const allTasksButton =
+                document.querySelector(
+                    '[data-view="all"]'
                 );
 
-            document
-                .querySelector('[data-view="all"]')
-                .classList.add("active");
+
+            if (allTasksButton) {
+
+                allTasksButton.classList.add(
+                    "active"
+                );
+
+            }
+
 
             taskSectionTitle.textContent =
                 "My Tasks";
 
+
             taskSectionDescription.textContent =
                 "Keep track of everything you need to accomplish.";
+
 
             renderTasks();
 
@@ -827,7 +881,10 @@ function showToast(message) {
     toastMessage.textContent =
         message;
 
-    toast.classList.add("show");
+
+    toast.classList.add(
+        "show"
+    );
 
 
     clearTimeout(toastTimer);
@@ -855,7 +912,10 @@ mobileMenuBtn.addEventListener(
     "click",
     function () {
 
-        sidebar.classList.add("open");
+        sidebar.classList.add(
+            "open"
+        );
+
 
         mobileOverlay.classList.remove(
             "hidden"
@@ -873,7 +933,10 @@ mobileOverlay.addEventListener(
 
 function closeMobileSidebar() {
 
-    sidebar.classList.remove("open");
+    sidebar.classList.remove(
+        "open"
+    );
+
 
     mobileOverlay.classList.add(
         "hidden"
@@ -893,20 +956,24 @@ themeToggle.addEventListener(
             "dark-mode"
         );
 
+
         showToast(
             "Theme preference updated."
         );
+
     }
 );
 
 
 /* =========================================
-   KEYBOARD SHORTCUT
+   KEYBOARD SHORTCUTS
 ========================================= */
 
 document.addEventListener(
     "keydown",
     function (event) {
+
+        /* Escape closes modal */
 
         if (
             event.key === "Escape" &&
@@ -917,6 +984,8 @@ document.addEventListener(
 
         }
 
+
+        /* Ctrl + K focuses search */
 
         if (
             event.ctrlKey &&
